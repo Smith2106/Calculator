@@ -92,6 +92,10 @@ const operate = function(operator, a, b) {
     case 'x':
       return multiply(a, b);
     case '/':
+      if (b === 0) {
+        alert("Don't divide by 0!");
+        return a;
+      }
       return divide(a, b); 
     case '%':
       return remainder(a, b);

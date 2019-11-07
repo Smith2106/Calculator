@@ -3,7 +3,7 @@
   height: 100vh;
   display: grid;
   grid-template-columns: auto auto auto auto;
-  font-size: 40px;
+  font-size: 4rem;
 }
 
 #calculator > input {
