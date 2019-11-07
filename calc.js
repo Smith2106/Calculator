@@ -1,4 +1,6 @@
-let displayValue = "0";
+let displayValue = "";
+let storedOperator = "";
+let storedValue = "";
 
 const calculator = document.getElementById("calculator");
 const numberInput = document.getElementById("numberInput");
@@ -33,7 +35,7 @@ for (let i = 0; i < inputs.length; i++) {
     case '7':
     case '8':
     case '9':
-      inputElement.addEventListener('click', (e) => {
+      inputElement.addEventListener('click', e => {
         numPress(e.target.innerText);
       });
       break;
@@ -42,10 +44,16 @@ for (let i = 0; i < inputs.length; i++) {
     case '-':
     case '/':
     case '%':
+      inputElement.addEventListener('click', e => {
+        storeOperandOperator(inputElement.innerText);
+      });
       break;
     case '+/-':
       break;
     case '=':
+      inputElement.addEventListener('click', e => {
+        evaluate();
+      });
       break;
     case 'AC':
       break;
@@ -70,28 +78,55 @@ const divide = function(a, b) {
   return a / b;
 }
 
+const remainder = function(a, b) {
+  return a % b;
+}
+
 const operate = function(operator, a, b) {
   switch(operator) {
     case '+':
       return add(a, b);
     case '-':
       return subtract(a, b);
-    case '*':
+    case 'x':
       return multiply(a, b);
     case '/':
       return divide(a, b); 
+    case '%':
+      return remainder(a, b);
   }
 }
 
 const numPress = function(num) {
-  updateDisplayValue(String((Number(displayValue) * 10) + Number(num)));
+  if (displayValue === "0" || displayValue == storedValue) updateDisplayValue(num);
+  else updateDisplayValue(displayValue + num);
 }
 
 const eraseNum = function() {
   updateDisplayValue(displayValue.slice(0,-1));
 }
 
+const storeOperandOperator = function(operator) {
+  const eval = !(storedOperator === "" || storedValue === "" || displayValue === "");
+  
+  if (eval) {
+    storedValue = evaluate();
+  }
+  else {
+    storedValue = Number(displayValue);
+    displayValue = "";
+  }
+
+  storedOperator = operator;
+}
+
+const evaluate = function() {
+  const result = operate(storedOperator, Number(storedValue), Number(displayValue))
+  updateDisplayValue(result)
+  return result;
+}
+
 const updateDisplayValue = function(newDisplay) {
-  displayValue = newDisplay === "" ? "0" : newDisplay;
+  displayValue = newDisplay === "" ? "0" : String(newDisplay);
   numberInput.value = displayValue;
 }
