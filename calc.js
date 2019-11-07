@@ -93,7 +93,7 @@ const operate = function(operator, a, b) {
       return multiply(a, b);
     case '/':
       if (b === 0) {
-        alert("Don't divide by 0!");
+        alert("You take that back.");
         return a;
       }
       return divide(a, b); 
