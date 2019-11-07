@@ -16,6 +16,12 @@
   grid-column-end: 3;
 }
 
+#numberInput {
+  text-align: right;
+  padding-right: 1rem;
+  padding-left: 1rem;
+}
+
 .item {
   font-size: 4rem;
 }
