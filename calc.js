@@ -53,6 +53,7 @@ for (let i = 0; i < inputs.length; i++) {
     case '=':
       inputElement.addEventListener('click', e => {
         evaluate();
+        storedOperator = "";
       });
       break;
     case 'AC':
@@ -94,6 +95,8 @@ const operate = function(operator, a, b) {
       return divide(a, b); 
     case '%':
       return remainder(a, b);
+    default:
+      return b;
   }
 }
 
