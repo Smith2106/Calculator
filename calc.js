@@ -9,18 +9,32 @@ const inputs = calculator.children;
 
 numberInput.addEventListener('input', e => updateDisplayValue(e.target.value));
 
-document.addEventListener("keypress", e => {
-  console.log(event.keyCode);
-  if (event.keyCode > 47 && event.keyCode < 58) {
-    numPress(event.keyCode - 48);
-  }
+let keysPressed = {};
+
+document.addEventListener('keydown', (event) => {
+   keysPressed[event.key] = true;
+   console.log(event.key);
+   if (keysPressed['Backspace']) eraseNum();
+   else if (keysPressed['Enter']) finishChain();
+});
+
+document.addEventListener('keyup', (event) => {
+  delete keysPressed[event.key];
+});
+
+document.addEventListener('keypress', e => {
+  keysPressed[event.key] = true;
+  console.log(event.key);
+  
+  if (keysPressed['.'] || !isNaN(event.key)) numPress(event.key);
+  else if (keysPressed['*'] || keysPressed['-'] || keysPressed['/'] || keysPressed['%'] || keysPressed['+']) storeOperandOperator(event.key);
+  else if (keysPressed['=']) finishChain();
+  else if (keysPressed['a'] && keysPressed['c']) clear();
+  else if (event.keyCode > 47 && event.keyCode < 58) numPress(event.keyCode - 48);
+
 })
 
-document.addEventListener('keydown', e => {
-  if (event.keyCode == 8) {
-    eraseNum();
-  }
-})
+
 
 for (let i = 0; i < inputs.length; i++) {
   const inputElement = inputs[i];
@@ -57,8 +71,7 @@ for (let i = 0; i < inputs.length; i++) {
       break;
     case '=':
       inputElement.addEventListener('click', e => {
-        evaluate();
-        storedOperator = "";
+        finishChain();
       });
       break;
     case 'AC':
@@ -95,6 +108,7 @@ const operate = function(operator, a, b) {
     case '-':
       return subtract(a, b);
     case 'x':
+    case '*':
       return multiply(a, b);
     case '/':
       if (b === 0) {
@@ -111,7 +125,13 @@ const operate = function(operator, a, b) {
 
 const numPress = function(num) {
   if (displayValue === "0" || displayValue == storedValue) updateDisplayValue(num);
+  else if (num === '.' && displayValue.includes('.'));
   else updateDisplayValue(displayValue + num);
+}
+
+const finishChain = function() {
+  evaluate();
+  storedOperator = "";
 }
 
 const eraseNum = function() {
@@ -119,14 +139,19 @@ const eraseNum = function() {
 }
 
 const storeOperandOperator = function(operator) {
-  const eval = !(storedOperator === "" || storedValue === "" || displayValue === "");
-  
-  if (eval) {
-    storedValue = evaluate();
-  }
-  else {
-    storedValue = Number(displayValue);
-    displayValue = "";
+  const reflexiveOp = displayValue === "" && storedOperator === operator;
+
+  if (displayValue !== "" || storedOperator === operator) {
+    const eval = storedOperator !== "" && storedValue !== "";
+    if (eval) {
+      if (reflexiveOp) displayValue = String(storedValue);
+      storedValue = evaluate();
+      if (reflexiveOp) displayValue = "";
+    }
+    else {
+      storedValue = Number(displayValue);
+      displayValue = "";
+    }
   }
 
   storedOperator = operator;
