@@ -5,43 +5,22 @@ let storedValue = "";
 const calculator = document.getElementById("calculator");
 const numberInput = document.getElementById("numberInput");
 const decimalButton = document.getElementById("decimal");
+const buttons = document.querySelector('button');
 const inputs = calculator.children;
 
 numberInput.addEventListener('input', e => updateDisplayValue(e.target.value));
 
 let keysPressed = {};
-
-document.addEventListener('keydown', (event) => {
-   keysPressed[event.key] = true;
-   console.log(event.key);
-   if (keysPressed['Backspace']) eraseNum();
-   else if (keysPressed['Enter']) finishChain();
-});
-
-document.addEventListener('keyup', (event) => {
-  delete keysPressed[event.key];
-});
-
-document.addEventListener('keypress', e => {
-  keysPressed[event.key] = true;
-  console.log(event.key);
-  
-  if (keysPressed['.'] || !isNaN(event.key)) numPress(event.key);
-  else if (keysPressed['*'] || keysPressed['-'] || keysPressed['/'] || keysPressed['%'] || keysPressed['+']) storeOperandOperator(event.key);
-  else if (keysPressed['=']) finishChain();
-  else if (keysPressed['a'] && keysPressed['c']) clear();
-  else if (event.keyCode > 47 && event.keyCode < 58) numPress(event.keyCode - 48);
-
-})
-
-
+let keyButtonMapping = {};
 
 for (let i = 0; i < inputs.length; i++) {
   const inputElement = inputs[i];
 
+  keyButtonMapping[inputElement.innerText] = inputElement;
+
   inputElement.addEventListener('mousedown', e => e.preventDefault());
 
-  switch(inputElement.innerHTML) {
+  switch(inputElement.innerText) {
     case '0':
     case '1':
     case '2':
@@ -82,6 +61,33 @@ for (let i = 0; i < inputs.length; i++) {
       });
   }
 }
+
+document.addEventListener('keydown', (event) => {
+  keysPressed[event.key] = true;
+  if (keysPressed['Backspace']) eraseNum();
+  else if (keysPressed['Enter']) {
+    keyButtonMapping['='].classList.add('depressedButton');
+    finishChain();
+  }
+});
+
+document.addEventListener('keyup', (event) => {
+  if (keysPressed['Enter']) keyButtonMapping['='].classList.remove('depressedButton');
+  else if (keyButtonMapping[event.key]) keyButtonMapping[event.key].classList.remove('depressedButton');
+  delete keysPressed[event.key];
+});
+
+document.addEventListener('keypress', e => {
+  keysPressed[event.key] = true;
+  
+  keyButtonMapping[event.key].classList.add('depressedButton');
+  if (keysPressed['.'] || !isNaN(event.key)) numPress(event.key);
+  else if (keysPressed['*'] || keysPressed['-'] || keysPressed['/'] || keysPressed['%'] || keysPressed['+'] || keysPressed['x']) storeOperandOperator(event.key);
+  else if (keysPressed['=']) finishChain();
+  else if (keysPressed['a'] && keysPressed['c']) clear();
+  else if (event.keyCode > 47 && event.keyCode < 58) numPress(event.keyCode - 48);
+
+})
 
 const add = function(a, b) {
   return a + b;
