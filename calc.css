@@ -1,6 +1,7 @@
 #calculator {
   width: 100vw;
   height: 100vh;
+  padding: 0;
   display: grid;
   grid-template-columns: auto auto auto auto;
   font-size: 4rem;
@@ -9,6 +10,29 @@
 #calculator > input {
   grid-column-start: 1;
   grid-column-end: 5;
+}
+
+button {
+  background-color: #4C86A8; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+button:hover {
+  background-color: #477890;
+}
+
+button:active {
+  background-color: #477890;
+  border: 1px #2a576d solid;
+}
+
+button:focus {
+  outline: none;
 }
 
 #zeroKey {
@@ -20,6 +44,9 @@
   text-align: right;
   padding-right: 1rem;
   padding-left: 1rem;
+  background-color: #E1DD8F;
+  border: none;
+  color: #8E3B46;
 }
 
 .item {

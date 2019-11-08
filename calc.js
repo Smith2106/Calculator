@@ -39,6 +39,8 @@ document.addEventListener('keypress', e => {
 for (let i = 0; i < inputs.length; i++) {
   const inputElement = inputs[i];
 
+  inputElement.addEventListener('mousedown', e => e.preventDefault());
+
   switch(inputElement.innerHTML) {
     case '0':
     case '1':
