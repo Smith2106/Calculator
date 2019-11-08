@@ -4,6 +4,7 @@ let storedValue = "";
 
 const calculator = document.getElementById("calculator");
 const numberInput = document.getElementById("numberInput");
+const decimalButton = document.getElementById("decimal");
 const inputs = calculator.children;
 
 numberInput.addEventListener('input', e => updateDisplayValue(e.target.value));
@@ -35,6 +36,7 @@ for (let i = 0; i < inputs.length; i++) {
     case '7':
     case '8':
     case '9':
+    case '.':
       inputElement.addEventListener('click', e => {
         numPress(e.target.innerText);
       });
@@ -49,6 +51,9 @@ for (let i = 0; i < inputs.length; i++) {
       });
       break;
     case '+/-':
+      inputElement.addEventListener('click', e => {
+        flipSign();
+      });
       break;
     case '=':
       inputElement.addEventListener('click', e => {
@@ -57,9 +62,9 @@ for (let i = 0; i < inputs.length; i++) {
       });
       break;
     case 'AC':
-      break;
-    case '.':
-      break;
+      inputElement.addEventListener('click', e => {
+        clear();
+      });
   }
 }
 
@@ -125,6 +130,17 @@ const storeOperandOperator = function(operator) {
   }
 
   storedOperator = operator;
+  decimalButton.disabled = false;
+}
+
+const clear = function() {
+  storedValue = "";
+  storedOperator = "";
+  updateDisplayValue("");
+}
+
+const flipSign = function() {
+  updateDisplayValue(-1 * Number(displayValue))
 }
 
 const evaluate = function() {
@@ -136,4 +152,6 @@ const evaluate = function() {
 const updateDisplayValue = function(newDisplay) {
   displayValue = newDisplay === "" ? "0" : String(newDisplay);
   numberInput.value = displayValue;
+
+  decimalButton.disabled = displayValue.includes('.');
 }
